@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="he">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&amp;display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#7f2448",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#001c3a",
+                        "secondary-container": "#54a0fe",
+                        "inverse-on-surface": "#eef2e8",
+                        "surface-bright": "#f7fbf0",
+                        "on-primary-container": "#cbffc2",
+                        "on-surface-variant": "#40493d",
+                        "on-secondary-container": "#003567",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "on-primary": "#ffffff",
+                        "outline": "#707a6c",
+                        "secondary-fixed-dim": "#a5c8ff",
+                        "tertiary-fixed": "#ffd9e2",
+                        "on-primary-fixed-variant": "#005312",
+                        "primary-fixed-dim": "#88d982",
+                        "surface-dim": "#d7dbd2",
+                        "surface-container": "#ebefe5",
+                        "primary-fixed": "#a3f69c",
+                        "inverse-surface": "#2d322b",
+                        "inverse-primary": "#88d982",
+                        "secondary": "#005faf",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#f1f5eb",
+                        "on-primary-fixed": "#002204",
+                        "secondary-fixed": "#d4e3ff",
+                        "background": "#f7fbf0",
+                        "on-surface": "#181d17",
+                        "surface-container-highest": "#e0e4da",
+                        "outline-variant": "#bfcaba",
+                        "on-secondary-fixed-variant": "#004786",
+                        "primary": "#0d631b",
+                        "primary-container": "#2e7d32",
+                        "surface-container-high": "#e5eadf",
+                        "surface-tint": "#1b6d24",
+                        "surface": "#f7fbf0",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#e0e4da",
+                        "tertiary": "#923357",
+                        "on-background": "#181d17",
+                        "tertiary-container": "#b14b6f",
+                        "on-tertiary-container": "#ffedf0",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed": "#3f001c",
+                        "tertiary-fixed-dim": "#ffb1c7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "lg": "24px",
+                        "base": "8px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "xs": "4px",
+                        "container-margin": "16px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "caption-sm": ["Heebo"],
+                        "caption-md": ["Heebo"],
+                        "body-sm": ["Heebo"],
+                        "body-base": ["Heebo"],
+                        "headline-md": ["Heebo"],
+                        "headline-sm": ["Heebo"],
+                        "headline-lg": ["Heebo"]
+                    },
+                    "fontSize": {
+                        "caption-sm": ["12px", { "lineHeight": "1.2", "fontWeight": "500" }],
+                        "caption-md": ["14px", { "lineHeight": "1.2", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-base": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-md": ["28px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "headline-sm": ["24px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        body {
+            background-color: #f7fbf0;
+            font-family: 'Heebo', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-background text-on-surface">
+    <header class="bg-white dark:bg-zinc-900 shadow-sm border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-50">
+        <div class="flex justify-between items-center px-4 h-16 w-full max-w-7xl mx-auto">
+            <div class="flex items-center gap-4">
+                <span class="text-xl font-bold text-green-800 dark:text-green-400 tracking-tight">Sharehood</span>
+            </div>
+            <div class="hidden md:flex flex-1 justify-center max-w-lg mx-8">
+                <div class="relative w-full">
+                    <input
+                        class="w-full bg-surface-container-low border-none rounded-xl px-10 py-2 text-body-base focus:ring-2 focus:ring-secondary"
+                        placeholder="חיפוש ציוד..." type="text" />
+                    <span
+                        class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-sm">
+                <button
+                    class="p-2 rounded-full hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors active:opacity-80">
+                    <span class="material-symbols-outlined text-zinc-600 dark:text-zinc-400">notifications</span>
+                </button>
+                <button
+                    class="p-2 rounded-full hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors active:opacity-80">
+                    <span class="material-symbols-outlined text-zinc-600 dark:text-zinc-400">account_circle</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    <main class="max-w-7xl mx-auto px-4 py-8 pb-24">
+        <div class="mb-xl">
+            <h1 class="font-headline-lg text-headline-lg mb-sm">לוח פריטים להשכרה</h1>
+            <p class="font-body-base text-body-base text-on-surface-variant">מצא את הציוד שאתה צריך, במחיר המשתלם ביותר
+            </p>
+        </div>
+        <div class="flex gap-sm overflow-x-auto pb-md mb-xl no-scrollbar">
+            <button
+                class="px-md py-sm bg-primary-container text-on-primary-container rounded-full font-caption-md text-caption-md whitespace-nowrap">הכל</button>
+            <button
+                class="px-md py-sm bg-surface-container-highest text-on-surface-variant rounded-full font-caption-md text-caption-md whitespace-nowrap hover:bg-surface-container-high transition-colors">כלי
+                עבודה</button>
+            <button
+                class="px-md py-sm bg-surface-container-highest text-on-surface-variant rounded-full font-caption-md text-caption-md whitespace-nowrap hover:bg-surface-container-high transition-colors">מחנאות
+                וטיולים</button>
+            <button
+                class="px-md py-sm bg-surface-container-highest text-on-surface-variant rounded-full font-caption-md text-caption-md whitespace-nowrap hover:bg-surface-container-high transition-colors">מטבח</button>
+            <button
+                class="px-md py-sm bg-surface-container-highest text-on-surface-variant rounded-full font-caption-md text-caption-md whitespace-nowrap hover:bg-surface-container-high transition-colors">גינון</button>
+            <button
+                class="px-md py-sm bg-surface-container-highest text-on-surface-variant rounded-full font-caption-md text-caption-md whitespace-nowrap hover:bg-surface-container-high transition-colors">ספורט</button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-md">
+            <div
+                class="bg-white rounded-xl overflow-hidden shadow-[0_4px_6px_-1px_rgba(0,0,0,0.08)] border border-surface-container transition-transform hover:-translate-y-1 active:scale-[0.98] cursor-pointer">
+                <div class="relative h-48">
+                    <img class="w-full h-full object-cover"
+                        data-alt="A professional-grade cordless power drill set resting on a clean, light-colored wooden workbench. The lighting is bright and natural, coming from a nearby window, creating a warm and approachable neighborhood DIY feel. The focus is sharp on the tool, with a soft blurred background of a modern home garage. The color palette features clean whites and natural wood tones with deep green accents, reflecting a high-quality community sharing aesthetic."
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDh79pQbm8U-FTQBjZlkdm7x8woWjzWejC3ERCGoMnsr7mSv4ejT-rkcGnq2KwP4uDOlnBnG0AIPCDKcIOsXXgCOnIxKtOLO5IWuN1bZmXsXoXXsFy8VJtn5hjKfXwyz_nR37DPgOUJ8KX-GDj6L_6vqBVZkKRhvWtfkTc7fphdRt3sv6vqpHgFVP7HkrFSlYyF2lKTNrWlP-CgxN7WqWZ4utIefu9tc803QxhQ-OpWFBQCLczuj_Wjs14vK2Oe6q2_-a5DPU7ZEy4" />
+                    <div
+                        class="absolute top-2 left-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg flex items-center gap-1">
+                        <span class="material-symbols-outlined text-yellow-500 text-[18px]"
+                            style="font-variation-settings: 'FILL' 1;">star</span>
+                        <span class="font-caption-sm text-caption-sm">4.9</span>
+                    </div>
+                </div>
+                <div class="p-md">
+                    <div class="flex justify-between items-start mb-1">
+                        <h3 class="font-headline-sm text-[18px] text-on-surface">מקדחה נטענת מקיטה</h3>
+                        <span class="font-headline-sm text-[18px] text-primary">₪45</span>
+                    </div>
+                    <p class="font-caption-md text-caption-md text-on-surface-variant mb-2">ליום</p>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span
+                            class="bg-surface-container-low px-2 py-1 rounded-md font-caption-sm text-caption-sm text-on-surface-variant">כלי
+                            עבודה</span>
+                        <div class="flex items-center text-on-surface-variant gap-1">
+                            <span class="material-symbols-outlined text-[16px]">location_on</span>
+                            <span class="font-caption-sm text-caption-sm">תל אביב</span>
+                        </div>
+                    </div>
+                    <button
+                        class="w-full py-2 bg-primary text-white rounded-lg font-body-base hover:opacity-90 transition-opacity">הזמן
+                        עכשיו</button>
+                </div>
+            </div>
+            <div
+                class="bg-white rounded-xl overflow-hidden shadow-[0_4px_6px_-1px_rgba(0,0,0,0.08)] border border-surface-container transition-transform hover:-translate-y-1 active:scale-[0.98] cursor-pointer">
+                <div class="relative h-48">
+                    <img class="w-full h-full object-cover"
+                        data-alt="A high-quality four-person camping tent set up in a lush, sun-drenched backyard garden with soft green grass. The morning light is golden and warm, suggesting a perfect weekend trip. The scene is clean, organized, and inviting, symbolizing trust and outdoor adventure within a community. The overall style is modern and high-contrast, utilizing the corporate light mode theme with vibrant green and soft grey tones."
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4SJpt-zzRKh3kbuwsk-AA4-0Ijz_Bi6gdJwA8RKubTQRafnfo9XF-Qv65NrI0wzdw6WV0xXjdph3pQldd_qv_Rx-7Nc6XZgj3L8otcqWolePjcKtW3mfkhHZQB2glngn8qxTqrAkowmVWhqV_k7jTzyyIMiakq9UrCVdTCisxaDk6qVfZSiJjujV6GSXzQM82Fr5CXwYyEInQL8YKDJCYsRJwBCmZ3AWvZU7iyEmeMzEG1UKfiRvkmcl7zHSIZN72gzXVrCDhnuI" />
+                    <div
+                        class="absolute top-2 left-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg flex items-center gap-1">
+                        <span class="material-symbols-outlined text-yellow-500 text-[18px]"
+                            style="font-variation-settings: 'FILL' 1;">star</span>
+                        <span class="font-caption-sm text-caption-sm">4.7</span>
+                    </div>
+                </div>
+                <div class="p-md">
+                    <div class="flex justify-between items-start mb-1">
+                        <h3 class="font-headline-sm text-[18px] text-on-surface">אוהל 4 אנשים</h3>
+                        <span class="font-headline-sm text-[18px] text-primary">₪60</span>
+                    </div>
+                    <p class="font-caption-md text-caption-md text-on-surface-variant mb-2">ליום</p>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span
+                            class="bg-surface-container-low px-2 py-1 rounded-md font-caption-sm text-caption-sm text-on-surface-variant">מחנאות</span>
+                        <div class="flex items-center text-on-surface-variant gap-1">
+                            <span class="material-symbols-outlined text-[16px]">location_on</span>
+                            <span class="font-caption-sm text-caption-sm">פתח תקווה</span>
+                        </div>
+                    </div>
+                    <button
+                        class="w-full py-2 bg-primary text-white rounded-lg font-body-base hover:opacity-90 transition-opacity">הזמן
+                        עכשיו</button>
+                </div>
+            </div>
+            <div
+                class="bg-white rounded-xl overflow-hidden shadow-[0_4px_6px_-1px_rgba(0,0,0,0.08)] border border-surface-container transition-transform hover:-translate-y-1 active:scale-[0.98] cursor-pointer">
+                <div class="relative h-48">
+                    <img class="w-full h-full object-cover"
+                        data-alt="A modern, high-end stand mixer in a sleek matte charcoal finish standing on a pristine white kitchen counter. The lighting is bright and architectural, highlighting the metallic details and professional build. The setting is a minimalist, clean-mode kitchen with subtle green botanical accents in the background. The mood is professional yet domestic, fitting a high-quality neighborhood equipment sharing platform."
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDriCMXkZXLv_VCbWCtKMGsjkm4-W1Wnyz03nONQURybTu73fQd_qzPwDHFUay8S8SCfCWhY5hw9rvOQqW8cvQ4mGVQFt62CerPkznhe1hjT3yItsglGiUF3hX40x2CKuFf7Fnt8QcBe00VkD8LcYYiC_sjlarQ9wyDfQOb7yknu7ZoJ-LIjaUyY2IiJkOJKwfnJR5CMOKBAllHKPmNR6_BRhmmAbgXRSWkxDYsCid1L5fVmS5BKWJwf6b9DuYqMUVFOioKkiq8Jkk" />
+                    <div
+                        class="absolute top-2 left-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg flex items-center gap-1">
+                        <span class="material-symbols-outlined text-yellow-500 text-[18px]"
+                            style="font-variation-settings: 'FILL' 1;">star</span>
+                        <span class="font-caption-sm text-caption-sm">5.0</span>
+                    </div>
+                </div>
+                <div class="p-md">
+                    <div class="flex justify-between items-start mb-1">
+                        <h3 class="font-headline-sm text-[18px] text-on-surface">מיקסר קיטצ'ן אייד</h3>
+                        <span class="font-headline-sm text-[18px] text-primary">₪80</span>
+                    </div>
+                    <p class="font-caption-md text-caption-md text-on-surface-variant mb-2">ליום</p>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span
+                            class="bg-surface-container-low px-2 py-1 rounded-md font-caption-sm text-caption-sm text-on-surface-variant">מטבח</span>
+                        <div class="flex items-center text-on-surface-variant gap-1">
+                            <span class="material-symbols-outlined text-[16px]">location_on</span>
+                            <span class="font-caption-sm text-caption-sm">הרצליה</span>
+                        </div>
+                    </div>
+                    <button
+                        class="w-full py-2 bg-primary text-white rounded-lg font-body-base hover:opacity-90 transition-opacity">הזמן
+                        עכשיו</button>
+                </div>
+            </div>
+            <div
+                class="bg-white rounded-xl overflow-hidden shadow-[0_4px_6px_-1px_rgba(0,0,0,0.08)] border border-surface-container transition-transform hover:-translate-y-1 active:scale-[0.98] cursor-pointer">
+                <div class="relative h-48">
+                    <img class="w-full h-full object-cover"
+                        data-alt="A professional heavy-duty lawn mower parked on a perfectly manicured, bright green lawn under clear afternoon skies. The machine is clean and well-maintained, reflecting reliability and utility. The sunlight creates sharp, clean shadows, emphasizing a bright and modern light-mode aesthetic. The composition is balanced and professional, utilizing a color scheme of deep greens, greys, and crisp whites for a dependable community service feel."
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUyiiqPbPTXTqRw0bJzhNgyZlGC-KFDSZYZbw4VyyEkeCAAgW82TE7HRle3_i9gB9AeUaNXj6Fr2uL1ZzVqNQojZQNiKATTAmqZ7kMFQP5oTG-7v6ZWwe5t8y-gMrv-WshXGZrxOeU7EI6lNz9N6RM_ryAhojo-xAdaE2CLok_pCpcGOE2ONRHeC_ZPEA6ueZF3DCo4IW6iXzl97lDWxyiba1vv_5X2kmzUGEd2EqQHiI63rFGOE7Db8TNBZgYxzRq2EIjdMkJQtk" />
+                    <div
+                        class="absolute top-2 left-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg flex items-center gap-1">
+                        <span class="material-symbols-outlined text-yellow-500 text-[18px]"
+                            style="font-variation-settings: 'FILL' 1;">star</span>
+                        <span class="font-caption-sm text-caption-sm">4.8</span>
+                    </div>
+                </div>
+                <div class="p-md">
+                    <div class="flex justify-between items-start mb-1">
+                        <h3 class="font-headline-sm text-[18px] text-on-surface">מכסחת דשא בנזין</h3>
+                        <span class="font-headline-sm text-[18px] text-primary">₪120</span>
+                    </div>
+                    <p class="font-caption-md text-caption-md text-on-surface-variant mb-2">ליום</p>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span
+                            class="bg-surface-container-low px-2 py-1 rounded-md font-caption-sm text-caption-sm text-on-surface-variant">גינון</span>
+                        <div class="flex items-center text-on-surface-variant gap-1">
+                            <span class="material-symbols-outlined text-[16px]">location_on</span>
+                            <span class="font-caption-sm text-caption-sm">רעננה</span>
+                        </div>
+                    </div>
+                    <button
+                        class="w-full py-2 bg-primary text-white rounded-lg font-body-base hover:opacity-90 transition-opacity">הזמן
+                        עכשיו</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <nav
+        class="fixed bottom-0 left-0 w-full flex justify-around items-center h-16 px-2 bg-white dark:bg-zinc-900 border-t border-zinc-200 dark:border-zinc-800 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.08)] z-50">
+        <a class="flex flex-col items-center justify-center text-zinc-500 dark:text-zinc-400 pt-1 hover:text-blue-500 transition-colors active:scale-95 duration-150"
+            href="#">
+            <span class="material-symbols-outlined">search</span>
+            <span class="text-[10px] font-medium uppercase tracking-wider">Explore</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-blue-600 dark:text-blue-400 border-t-2 border-blue-600 dark:border-blue-400 pt-1 active:scale-95 transition-transform duration-150"
+            href="#">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+            <span class="text-[10px] font-medium uppercase tracking-wider">Board</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-zinc-500 dark:text-zinc-400 pt-1 hover:text-blue-500 transition-colors active:scale-95 duration-150"
+            href="#">
+            <span class="material-symbols-outlined">add_circle</span>
+            <span class="text-[10px] font-medium uppercase tracking-wider">Lend</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-zinc-500 dark:text-zinc-400 pt-1 hover:text-blue-500 transition-colors active:scale-95 duration-150"
+            href="#">
+            <span class="material-symbols-outlined">person</span>
+            <span class="text-[10px] font-medium uppercase tracking-wider">Profile</span>
+        </a>
+    </nav>
+    <button
+        class="fixed bottom-20 left-4 w-14 h-14 bg-green-800 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform md:hidden z-40">
+        <span class="material-symbols-outlined text-[32px]">add</span>
+    </button>
+</body>
+
+</html>
