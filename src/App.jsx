@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Layout from './components/Layout';
 import BoardPage from './pages/BoardPage';
@@ -7,9 +7,15 @@ import CheckoutPage from './pages/CheckoutPage';
 import ExplorePage from './pages/ExplorePage';
 import LendPage from './pages/LendPage';
 import ProfilePage from './pages/ProfilePage';
+import AuthPage from './pages/AuthPage';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
 const AnimatedRoutes = () => {
   const location = useLocation();
+  const { user, loading } = useAuth();
+
+  // While auth status is loading, show a spinner placeholder
+  if (loading) return <div className="text-center py-32">טוען...</div>;
   
   return (
     <AnimatePresence mode="wait">
@@ -20,8 +26,9 @@ const AnimatedRoutes = () => {
           <Route path="board" element={<PageTransition><BoardPage /></PageTransition>} />
           <Route path="product/:id" element={<PageTransition><ProductDetailPage /></PageTransition>} />
           <Route path="checkout" element={<PageTransition><CheckoutPage /></PageTransition>} />
-          <Route path="lend" element={<PageTransition><LendPage /></PageTransition>} />
-          <Route path="profile" element={<PageTransition><ProfilePage /></PageTransition>} />
+          <Route path="lend" element={user ? <PageTransition><LendPage /></PageTransition> : <Navigate to="/auth" replace />} />
+          <Route path="profile" element={user ? <PageTransition><ProfilePage /></PageTransition> : <Navigate to="/auth" replace />} />
+          <Route path="auth" element={<PageTransition><AuthPage /></PageTransition>} />
         </Route>
       </Routes>
     </AnimatePresence>
@@ -41,9 +48,11 @@ const PageTransition = ({ children }) => (
 
 function App() {
   return (
-    <Router>
-      <AnimatedRoutes />
-    </Router>
+    <AuthProvider>
+      <Router>
+        <AnimatedRoutes />
+      </Router>
+    </AuthProvider>
   );
 }
 

@@ -1,12 +1,109 @@
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Star, MapPin, Clock, ShieldCheck, ChevronRight } from 'lucide-react';
+import { Star, MapPin, Clock, ShieldCheck, ChevronRight, X, Phone, Mail } from 'lucide-react';
 import { MOCK_PRODUCTS } from '../data/products';
+import { supabase, isSupabaseConfigured } from '../supabaseClient';
 
 const ProductDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
-  const product = MOCK_PRODUCTS.find(p => p.id === parseInt(id)) || MOCK_PRODUCTS[0];
+  useEffect(() => {
+    const fetchProductDetails = async () => {
+      setLoading(true);
+      
+      const fallbackToMock = () => {
+        const mockProd = MOCK_PRODUCTS.find(p => p.id === parseInt(id)) || MOCK_PRODUCTS[0];
+        setProduct(mockProd);
+        setLoading(false);
+      };
+
+      if (!isSupabaseConfigured) {
+        fallbackToMock();
+        return;
+      }
+
+      try {
+        // Fetch product details
+        const { data: pData, error: pErr } = await supabase
+          .from('products')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (pErr) throw pErr;
+        if (!pData) {
+          fallbackToMock();
+          return;
+        }
+
+        // Fetch reviews
+        const { data: rData, error: rErr } = await supabase
+          .from('reviews')
+          .select('*')
+          .eq('product_id', id);
+
+        const reviewsList = rData ? rData.map(r => ({
+          id: r.id,
+          user: r.user_name,
+          rating: Number(r.rating),
+          date: r.date_text,
+          comment: r.comment
+        })) : [];
+
+        const mappedProduct = {
+          id: pData.id,
+          name: pData.name,
+          price: Number(pData.price),
+          rating: Number(pData.rating || 4.5),
+          reviews: pData.reviews || 0,
+          category: pData.category,
+          location: pData.location,
+          description: pData.description,
+          image: pData.image,
+          lender: {
+            name: pData.lender_name,
+            responseTime: pData.lender_response_time,
+            joined: pData.lender_joined,
+            image: pData.lender_image
+          },
+          reviewsList
+        };
+
+        setProduct(mappedProduct);
+      } catch (err) {
+        console.error("Error fetching product details from Supabase:", err);
+        fallbackToMock();
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProductDetails();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        <p className="text-gray-500 mt-16 font-medium">טוען פרטי מוצר...</p>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="text-center py-64">
+        <p className="text-gray-500 font-medium">המוצר לא נמצא.</p>
+        <button onClick={() => navigate('/board')} className="text-secondary font-bold mt-8 hover:underline">
+          חזרה ללוח
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -57,7 +154,7 @@ const ProductDetailPage = () => {
           </div>
 
           <button 
-            onClick={() => navigate('/checkout')}
+            onClick={() => navigate('/checkout', { state: { productId: product.id } })}
             className="btn-primary w-full py-16 text-lg shadow-xl shadow-primary/20 flex items-center justify-center gap-8"
           >
             הזמן עכשיו
@@ -130,8 +227,11 @@ const ProductDetailPage = () => {
                 <div className="text-xs text-gray-500 italic">חבר מ-{product.lender.joined}</div>
               </div>
             </div>
-            <button className="w-full border-2 border-secondary text-secondary py-10 rounded-12 font-bold hover:bg-secondary hover:text-white transition-all active:scale-95">
-              שלח הודעה
+            <button 
+              onClick={() => setIsContactModalOpen(true)}
+              className="w-full border-2 border-secondary text-secondary py-10 rounded-12 font-bold hover:bg-secondary hover:text-white transition-all active:scale-95"
+            >
+              יצירת קשר
             </button>
           </div>
 
@@ -146,6 +246,59 @@ const ProductDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Message Modal */}
+      {/* Contact Modal */}
+      {isContactModalOpen && (
+        <div className="fixed inset-0 bg-black/40 z-[100] flex items-center justify-center p-16 animate-in fade-in duration-200 backdrop-blur-sm">
+          <div className="bg-white rounded-24 p-32 w-full max-w-sm shadow-2xl relative" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-24 border-b border-gray-100 pb-16">
+              <h3 className="text-xl font-bold text-gray-800">יצירת קשר עם {product.lender.name}</h3>
+              <button 
+                onClick={() => setIsContactModalOpen(false)} 
+                className="text-gray-400 hover:text-gray-600 transition-colors p-8 rounded-full hover:bg-gray-100"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div className="space-y-20 mb-32">
+              <a 
+                href="tel:0501234567" 
+                className="flex items-center gap-16 p-16 rounded-16 bg-gray-50 hover:bg-gray-100 transition-colors group"
+              >
+                <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
+                  <Phone size={24} />
+                </div>
+                <div>
+                  <div className="text-sm text-gray-500 mb-2">טלפון נייד</div>
+                  <div className="font-bold text-lg text-gray-800" dir="ltr">050-123-4567</div>
+                </div>
+              </a>
+
+              <a 
+                href={`mailto:${product.lender.image?.includes('u=') ? product.lender.image.split('u=')[1] : 'user'}@gmail.com?subject=התעניינות ב${product.name}`} 
+                className="flex items-center gap-16 p-16 rounded-16 bg-gray-50 hover:bg-gray-100 transition-colors group"
+              >
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                  <Mail size={24} />
+                </div>
+                <div>
+                  <div className="text-sm text-gray-500 mb-2">אימייל</div>
+                  <div className="font-bold text-gray-800 break-all" dir="ltr">{product.lender.image?.includes('u=') ? product.lender.image.split('u=')[1] : 'user'}@gmail.com</div>
+                </div>
+              </a>
+            </div>
+            
+            <button 
+              onClick={() => setIsContactModalOpen(false)}
+              className="w-full border-2 border-gray-200 text-gray-600 py-12 rounded-16 font-bold hover:bg-gray-50 transition-colors"
+            >
+              סגור
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );

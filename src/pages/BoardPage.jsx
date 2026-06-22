@@ -1,26 +1,81 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
-import { MOCK_PRODUCTS, CATEGORIES } from '../data/products';
+import { MOCK_PRODUCTS } from '../data/products';
+import { supabase, isSupabaseConfigured } from '../supabaseClient';
 
 const BoardPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryFromUrl = searchParams.get('category') || "הכל";
   const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setSelectedCategory(categoryFromUrl);
   }, [categoryFromUrl]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      if (!isSupabaseConfigured) {
+        setProducts(MOCK_PRODUCTS);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .order('id', { ascending: false });
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          const mapped = data.map(p => ({
+            id: p.id,
+            name: p.name,
+            price: Number(p.price),
+            rating: Number(p.rating || 4.5),
+            reviews: p.reviews || 0,
+            category: p.category,
+            location: p.location,
+            description: p.description,
+            image: p.image,
+            lender: {
+              name: p.lender_name,
+              responseTime: p.lender_response_time,
+              joined: p.lender_joined,
+              image: p.lender_image
+            }
+          }));
+          setProducts(mapped);
+        } else {
+          setProducts(MOCK_PRODUCTS);
+        }
+      } catch (err) {
+        console.error("Error fetching products from Supabase:", err);
+        setProducts(MOCK_PRODUCTS);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const handleCategoryChange = (cat) => {
     setSelectedCategory(cat);
     setSearchParams({ category: cat });
   };
 
-const searchTerm = searchParams.get('search')?.toLowerCase() || '';
-  const filteredProducts = MOCK_PRODUCTS.filter(p => {
+  const searchTerm = searchParams.get('search')?.toLowerCase() || '';
+  const filteredProducts = products.filter(p => {
     const matchesCategory = selectedCategory === "הכל" || p.category === selectedCategory;
-    const matchesSearch = !searchTerm || p.name.toLowerCase().includes(searchTerm) || p.description.toLowerCase().includes(searchTerm);
+    const matchesSearch = !searchTerm || 
+      (p.name && p.name.toLowerCase().includes(searchTerm)) || 
+      (p.description && p.description.toLowerCase().includes(searchTerm));
     return matchesCategory && matchesSearch;
   });
 
@@ -28,14 +83,22 @@ const searchTerm = searchParams.get('search')?.toLowerCase() || '';
     <div className="space-y-24">
       <section>
         <div className="flex justify-between items-center mb-24">
-
           <div>
             <h2 className="text-2xl font-bold">זמין עכשיו בקרבתך</h2>
-            <p className="text-gray-500 text-sm">מציג {filteredProducts.length} פריטים בקטגוריית {selectedCategory}</p>
+            {loading ? (
+              <p className="text-gray-500 text-sm">טוען פריטים...</p>
+            ) : (
+              <p className="text-gray-500 text-sm">מציג {filteredProducts.length} פריטים בקטגוריית {selectedCategory}</p>
+            )}
           </div>
         </div>
         
-        {filteredProducts.length > 0 ? (
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-64 bg-white rounded-8 border border-gray-100 shadow-sm">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            <p className="text-gray-500 mt-16 font-medium">טוען מוצרים...</p>
+          </div>
+        ) : filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-24">
             {filteredProducts.map(product => (
               <ProductCard key={product.id} product={product} />

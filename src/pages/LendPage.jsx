@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CATEGORIES } from '../data/products';
+import { supabase, isSupabaseConfigured } from '../supabaseClient';
+import { useAuth } from '../context/AuthContext';
 
 const LendPage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [form, setForm] = useState({
     name: '',
     price: '',
@@ -33,9 +36,46 @@ const LendPage = () => {
     setForm((prev) => ({ ...prev, images: [...prev.images, ''] }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('New product submitted:', form);
+
+    const lenderId = user?.id;
+    const lenderName = user?.user_metadata?.full_name || user?.email || 'משתמש';
+    const lenderImage = user?.user_metadata?.avatar_url || 'https://i.pravatar.cc/150?u=default';
+
+    const productData = {
+      name: form.name,
+      price: parseFloat(form.price),
+      rating: 5.0,
+      reviews: 0,
+      category: form.category,
+      location: form.location,
+      description: form.description,
+      image: form.images[0] || 'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?auto=format&fit=crop&q=80&w=800',
+      lender_id: lenderId,
+      lender_name: lenderName,
+      lender_response_time: 'פחות משעה',
+      lender_joined: 'מאי 2026',
+      lender_image: lenderImage,
+    };
+
+    if (isSupabaseConfigured) {
+      try {
+        const { error } = await supabase
+          .from('products')
+          .insert([productData]);
+
+        if (error) throw error;
+        alert('המוצר הועלה בהצלחה ל-Supabase!');
+      } catch (err) {
+        console.error("Error inserting product into Supabase:", err);
+        alert('התרחשה שגיאה בעת שמירת המוצר ב-Supabase. הנתונים הודפסו בקונסול.');
+      }
+    } else {
+      alert('המוצר נשמר בהצלחה (סימולציה מקומית - הגדר/י קובץ .env לחיבור Supabase).');
+    }
+
     // Reset form
     setForm({
       name: '',

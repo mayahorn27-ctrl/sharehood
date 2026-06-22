@@ -2,9 +2,12 @@ import { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import BottomNav from './BottomNav';
 import CategoryBar from './CategoryBar';
-import { Search, Bell, UserCircle, X, Leaf } from 'lucide-react';
+import { Search, X, Leaf, UserCircle } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const Layout = () => {
+  
+  const { user: authUser, loading: authLoading, logout } = useAuth();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
@@ -21,10 +24,10 @@ const Layout = () => {
           <div className="flex items-center gap-16 mb-32">
             <div className="relative flex-1">
               <Search className="absolute right-16 top-1/2 -translate-y-1/2 text-gray-400" size={24} />
-              <input 
+              <input
                 autoFocus
-                type="text" 
-                placeholder="מה תרצו לשכור היום?" 
+                type="text"
+                placeholder="מה תרצו לשכור היום?"
                 className="w-full bg-gray-100 border-none rounded-full pr-52 pl-16 py-16 text-lg outline-none focus:ring-2 focus:ring-secondary/20"
               />
             </div>
@@ -78,13 +81,17 @@ const Layout = () => {
             <Search size={24} />
           </button>
           
-          
           <Link to="/profile" className="flex items-center gap-12 p-6 pr-16 rounded-full bg-gray-50 border border-gray-100 hover:border-secondary/30 transition-all group">
-            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-secondary shadow-sm group-hover:scale-110 transition-transform">
-              <UserCircle size={28} />
-            </div>
-            <span className="text-sm font-bold text-gray-700 hidden md:block">החשבון שלי</span>
-          </Link>
+  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-secondary shadow-sm group-hover:scale-110 transition-transform">
+    <UserCircle size={28} />
+  </div>
+  {authUser && !authLoading ? (
+    <span className="text-sm font-bold text-gray-700 hidden md:block">{authUser.user_metadata?.full_name || authUser.email}</span>
+  ) : null}
+</Link>
+{authUser && !authLoading && (
+  <button onClick={logout} className="p-2 text-gray-600 hover:text-primary">התנתק</button>
+)}
         </div>
       </header>
 
