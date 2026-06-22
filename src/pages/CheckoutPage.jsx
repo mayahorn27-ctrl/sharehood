@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Calendar, Smartphone, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { supabase, isSupabaseConfigured } from '../supabaseClient';
-import { MOCK_PRODUCTS } from '../data/products';
+import { supabase } from '../supabaseClient';
 
 // ── Inline logos ─────────────────────────────────────────────────────────────
 const BitLogo = () => (
@@ -63,21 +62,16 @@ const CheckoutPage = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       setLoading(true);
-      if (!isSupabaseConfigured) {
-        const mock = MOCK_PRODUCTS.find(p => p.id === Number(productId)) || MOCK_PRODUCTS[0];
-        setProduct(mock);
-        setLoading(false);
-        return;
-      }
       try {
         const { data, error } = await supabase
           .from('products').select('*').eq('id', productId).single();
         if (error) throw error;
         setProduct(data
           ? { id: data.id, name: data.name, price: Number(data.price), image: data.image }
-          : MOCK_PRODUCTS.find(p => p.id === Number(productId)) || MOCK_PRODUCTS[0]);
-      } catch {
-        setProduct(MOCK_PRODUCTS.find(p => p.id === Number(productId)) || MOCK_PRODUCTS[0]);
+          : null);
+      } catch (err) {
+        console.error("Error fetching product for checkout:", err);
+        setProduct(null);
       } finally {
         setLoading(false);
       }
@@ -96,27 +90,25 @@ const CheckoutPage = () => {
     }
 
     // Save booking
-    if (isSupabaseConfigured) {
-      try {
-        await supabase.from('users').upsert([{
-          id: authUser.id,
-          full_name: form.fullName || authUser.email,
-          email: authUser.email,
-          phone: form.phone,
-          avatar_url: authUser.user_metadata?.avatar_url || null,
-          response_time: 'פחות משעה',
-          location: 'לא ידוע',
-          joined_at: new Date().toISOString(),
-        }], { onConflict: 'id' });
+    try {
+      await supabase.from('users').upsert([{
+        id: authUser.id,
+        full_name: form.fullName || authUser.email,
+        email: authUser.email,
+        phone: form.phone,
+        avatar_url: authUser.user_metadata?.avatar_url || null,
+        response_time: 'פחות משעה',
+        location: 'לא ידוע',
+        joined_at: new Date().toISOString(),
+      }], { onConflict: 'id' });
 
-        const { error } = await supabase.from('bookings').insert([{
-          product_id: product.id, user_id: authUser.id,
-          days, total_price: total, status: 'אושר',
-        }]);
-        if (error) throw error;
-      } catch (err) {
-        return alert(`שגיאה בשמירת ההזמנה: ${err.message}`);
-      }
+      const { error } = await supabase.from('bookings').insert([{
+        product_id: product.id, user_id: authUser.id,
+        days, total_price: total, status: 'אושר',
+      }]);
+      if (error) throw error;
+    } catch (err) {
+      return alert(`שגיאה בשמירת ההזמנה: ${err.message}`);
     }
 
     // Show payment instructions modal
