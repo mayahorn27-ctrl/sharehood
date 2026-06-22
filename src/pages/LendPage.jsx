@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CATEGORIES } from '../data/products';
 import { supabase, isSupabaseConfigured } from '../supabaseClient';
 import { useAuth } from '../context/AuthContext';
+
+const CATEGORIES = ["הכל", "כלי עבודה", "מחנאות", "מטבח", "אירוח", "ספורט", "גינה", "גיימינג", "תינוקות"];
 
 const LendPage = () => {
   const navigate = useNavigate();

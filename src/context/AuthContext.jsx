@@ -88,6 +88,23 @@ export const AuthProvider = ({ children }) => {
       throw error;
     }
     const signedUpUser = data?.session?.user ?? data?.user;
+
+    // Insert the new user into the public.users table so they appear in the DB
+    if (signedUpUser) {
+      const { error: insertError } = await supabase.from('users').insert({
+        id: signedUpUser.id,
+        email: email,
+        full_name: fullName,
+        avatar_url: `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=random`,
+        response_time: 'פחות משעה',
+        location: 'לא צוין',
+        joined_at: new Date().toLocaleDateString('he-IL', { month: 'long', year: 'numeric' })
+      });
+      if (insertError) {
+        console.error('Error inserting into public.users:', insertError);
+      }
+    }
+
     setUser(signedUpUser);
   };
 

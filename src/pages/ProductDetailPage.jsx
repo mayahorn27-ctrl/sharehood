@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Star, MapPin, Clock, ShieldCheck, ChevronRight, X, Phone, Mail } from 'lucide-react';
-import { MOCK_PRODUCTS } from '../data/products';
-import { supabase, isSupabaseConfigured } from '../supabaseClient';
+import { supabase } from '../supabaseClient';
 
 const ProductDetailPage = () => {
   const { id } = useParams();
@@ -14,29 +13,19 @@ const ProductDetailPage = () => {
   useEffect(() => {
     const fetchProductDetails = async () => {
       setLoading(true);
-      
-      const fallbackToMock = () => {
-        const mockProd = MOCK_PRODUCTS.find(p => p.id === parseInt(id)) || MOCK_PRODUCTS[0];
-        setProduct(mockProd);
-        setLoading(false);
-      };
 
-      if (!isSupabaseConfigured) {
-        fallbackToMock();
-        return;
-      }
 
       try {
-        // Fetch product details
+        // Fetch product details with lender contact info
         const { data: pData, error: pErr } = await supabase
           .from('products')
-          .select('*')
+          .select('*, lender:users(*)')
           .eq('id', id)
           .single();
 
         if (pErr) throw pErr;
         if (!pData) {
-          fallbackToMock();
+          setLoading(false);
           return;
         }
 
@@ -68,7 +57,9 @@ const ProductDetailPage = () => {
             name: pData.lender_name,
             responseTime: pData.lender_response_time,
             joined: pData.lender_joined,
-            image: pData.lender_image
+            image: pData.lender_image,
+            phone: pData.lender?.phone || 'לא הוזן',
+            email: pData.lender?.email || 'לא הוזן'
           },
           reviewsList
         };
@@ -76,7 +67,6 @@ const ProductDetailPage = () => {
         setProduct(mappedProduct);
       } catch (err) {
         console.error("Error fetching product details from Supabase:", err);
-        fallbackToMock();
       } finally {
         setLoading(false);
       }
@@ -264,7 +254,7 @@ const ProductDetailPage = () => {
             
             <div className="space-y-20 mb-32">
               <a 
-                href="tel:0501234567" 
+                href={`tel:${product.lender.phone}`} 
                 className="flex items-center gap-16 p-16 rounded-16 bg-gray-50 hover:bg-gray-100 transition-colors group"
               >
                 <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
@@ -272,12 +262,12 @@ const ProductDetailPage = () => {
                 </div>
                 <div>
                   <div className="text-sm text-gray-500 mb-2">טלפון נייד</div>
-                  <div className="font-bold text-lg text-gray-800" dir="ltr">050-123-4567</div>
+                  <div className="font-bold text-lg text-gray-800" dir="ltr">{product.lender.phone}</div>
                 </div>
               </a>
 
               <a 
-                href={`mailto:${product.lender.image?.includes('u=') ? product.lender.image.split('u=')[1] : 'user'}@gmail.com?subject=התעניינות ב${product.name}`} 
+                href={`mailto:${product.lender.email}?subject=התעניינות ב${product.name}`} 
                 className="flex items-center gap-16 p-16 rounded-16 bg-gray-50 hover:bg-gray-100 transition-colors group"
               >
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
@@ -285,7 +275,7 @@ const ProductDetailPage = () => {
                 </div>
                 <div>
                   <div className="text-sm text-gray-500 mb-2">אימייל</div>
-                  <div className="font-bold text-gray-800 break-all" dir="ltr">{product.lender.image?.includes('u=') ? product.lender.image.split('u=')[1] : 'user'}@gmail.com</div>
+                  <div className="font-bold text-gray-800 break-all" dir="ltr">{product.lender.email}</div>
                 </div>
               </a>
             </div>

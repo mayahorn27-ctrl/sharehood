@@ -1,7 +1,7 @@
 -- 1. Create the users table
 DROP TABLE IF EXISTS users CASCADE;
 create table if not exists users (
-  id uuid primary key default gen_random_uuid(),
+  id uuid primary key references auth.users(id) on delete cascade,
   full_name text not null,
   email text unique,
   phone text,

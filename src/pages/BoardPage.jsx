@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
-import { MOCK_PRODUCTS } from '../data/products';
-import { supabase, isSupabaseConfigured } from '../supabaseClient';
+import { supabase } from '../supabaseClient';
 
 const BoardPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -18,11 +17,7 @@ const BoardPage = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
-      if (!isSupabaseConfigured) {
-        setProducts(MOCK_PRODUCTS);
-        setLoading(false);
-        return;
-      }
+
 
       try {
         const { data, error } = await supabase
@@ -52,11 +47,11 @@ const BoardPage = () => {
           }));
           setProducts(mapped);
         } else {
-          setProducts(MOCK_PRODUCTS);
+          setProducts([]);
         }
       } catch (err) {
         console.error("Error fetching products from Supabase:", err);
-        setProducts(MOCK_PRODUCTS);
+        setProducts([]);
       } finally {
         setLoading(false);
       }
