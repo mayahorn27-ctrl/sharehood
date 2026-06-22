@@ -147,7 +147,6 @@ erDiagram
 | **Supabase Triggers** | לוגיקת שרת | Trigger אוטומטי שיוצר רשומה ב-`public.users` בכל פעם שמשתמש נרשם ל-Auth |
 | **Vercel** | Hosting / CI/CD | אחסון וסביבת הרצה לגרסת הפרודקשן. מבצע Deploy אוטומטי בכל push ל-GitHub |
 | **GitHub** | Version Control | ניהול גרסאות הקוד ו-CI/CD trigger ל-Vercel |
-| **Bit / PayBox** | תשלומים | מכוון את הלקוח לשלם דרך האפליקציות הישראליות הנפוצות ביותר לתשלום P2P. אין API — הפניה ישירה |
 | **Unsplash** | מדיה | תמונות מוצרים (CDN ציבורי, ללא API key) |
 | **ui-avatars.com** | מדיה | יצירת תמונות אווטאר אוטומטיות על בסיס שם המשתמש |
 
