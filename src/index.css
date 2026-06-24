@@ -34,7 +34,7 @@
   }
 
   .floating-nav {
-    @apply fixed bottom-24 left-1/2 -translate-x-1/2 bg-white/80 backdrop-blur-xl border border-white/20 shadow-2xl rounded-full px-8 py-8 flex items-center gap-4 z-50 transition-all duration-500 hover:bg-white/90;
+    @apply fixed bottom-24 left-1/2 -translate-x-1/2 bg-white/80 backdrop-blur-xl border border-white/20 shadow-2xl rounded-full px-16 py-8 flex items-center justify-between z-50 transition-all duration-500 hover:bg-white/90;
   }
 
   .nav-item {
