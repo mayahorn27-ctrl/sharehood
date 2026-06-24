@@ -2,13 +2,18 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Star, MapPin, Clock, ShieldCheck, ChevronRight, X, Phone, Mail } from 'lucide-react';
 import { supabase } from '../supabaseClient';
+import { useAuth } from '../context/AuthContext';
 
 const ProductDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user: authUser } = useAuth();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [hasRented, setHasRented] = useState(false);
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' });
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -75,6 +80,68 @@ const ProductDetailPage = () => {
 
     fetchProductDetails();
   }, [id]);
+
+  useEffect(() => {
+    const checkBooking = async () => {
+      if (authUser && id) {
+        try {
+          const { data } = await supabase
+            .from('bookings')
+            .select('id')
+            .eq('product_id', id)
+            .eq('user_id', authUser.id)
+            .limit(1);
+          if (data && data.length > 0) {
+            setHasRented(true);
+          }
+        } catch (err) {
+          console.error("Error checking bookings:", err);
+        }
+      }
+    };
+    checkBooking();
+  }, [authUser, id]);
+
+  const handleSubmitReview = async (e) => {
+    e.preventDefault();
+    if (!reviewForm.comment.trim()) return alert('נא להזין תוכן לביקורת');
+    setIsSubmittingReview(true);
+    
+    try {
+      const newReview = {
+        product_id: id,
+        user_name: authUser.user_metadata?.full_name || authUser.email || 'משתמש',
+        rating: reviewForm.rating,
+        date_text: 'היום',
+        comment: reviewForm.comment
+      };
+      
+      const { data, error } = await supabase.from('reviews').insert([newReview]).select();
+      if (error) throw error;
+      
+      const addedReview = {
+        id: data?.[0]?.id || Date.now(),
+        user: newReview.user_name,
+        rating: newReview.rating,
+        date: newReview.date_text,
+        comment: newReview.comment
+      };
+      
+      setProduct(prev => ({
+        ...prev,
+        reviewsList: [addedReview, ...prev.reviewsList],
+        reviews: prev.reviews + 1,
+      }));
+      
+      setReviewForm({ rating: 5, comment: '' });
+      alert('הביקורת נוספה בהצלחה!');
+    } catch (err) {
+      console.error("Error submitting review:", err);
+      alert('אירעה שגיאה בשמירת הביקורת.');
+    } finally {
+      setIsSubmittingReview(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -169,6 +236,49 @@ const ProductDetailPage = () => {
                 <span className="text-sm font-normal text-gray-500">({product.reviews})</span>
               </div>
             </div>
+
+            {hasRented && (
+              <div className="bg-gray-50 p-24 rounded-16 border border-gray-200 mb-24">
+                <h3 className="font-bold text-lg mb-16 text-gray-800">השאלת פריט זה בעבר? נשמח לביקורת!</h3>
+                <form onSubmit={handleSubmitReview} className="space-y-16">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-8">דירוג</label>
+                    <div className="flex gap-4">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => setReviewForm(prev => ({ ...prev, rating: star }))}
+                          className="focus:outline-none transition-transform hover:scale-110"
+                        >
+                          <Star 
+                            size={28} 
+                            className={`${star <= reviewForm.rating ? 'text-accent fill-accent' : 'text-gray-300'}`} 
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-8">הביקורת שלך</label>
+                    <textarea
+                      required
+                      value={reviewForm.comment}
+                      onChange={(e) => setReviewForm(prev => ({ ...prev, comment: e.target.value }))}
+                      placeholder="איך היה הציוד? איך היה המשאיל?"
+                      className="input-field w-full h-24 resize-none"
+                    ></textarea>
+                  </div>
+                  <button 
+                    type="submit" 
+                    disabled={isSubmittingReview}
+                    className="btn-primary w-full sm:w-auto px-24 py-10 rounded-8 font-bold disabled:opacity-50"
+                  >
+                    {isSubmittingReview ? 'שומר...' : 'פרסם ביקורת'}
+                  </button>
+                </form>
+              </div>
+            )}
 
             <div className="space-y-24">
               {product.reviewsList?.map((review) => (
