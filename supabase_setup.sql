@@ -196,3 +196,17 @@ on conflict (id) do nothing;
 select setval(pg_get_serial_sequence('products', 'id'), coalesce(max(id), 1)) from products;
 select setval(pg_get_serial_sequence('reviews',  'id'), coalesce(max(id), 1)) from reviews;
 select setval(pg_get_serial_sequence('bookings', 'id'), coalesce(max(id), 1)) from bookings;
+
+-- 10. Sync existing auth users to public users
+-- (Run this to restore users in public.users if the table was dropped)
+INSERT INTO public.users (id, full_name, email, avatar_url, response_time, location, joined_at)
+SELECT 
+  id, 
+  coalesce(raw_user_meta_data->>'full_name', email) as full_name,
+  email,
+  'https://ui-avatars.com/api/?name=' || coalesce(raw_user_meta_data->>'full_name', email) || '&background=random' as avatar_url,
+  'פחות משעה' as response_time,
+  'לא צוין' as location,
+  'היום' as joined_at
+FROM auth.users
+WHERE id NOT IN (SELECT id FROM public.users);

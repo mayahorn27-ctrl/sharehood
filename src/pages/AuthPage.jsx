@@ -30,7 +30,15 @@ const AuthPage = () => {
       navigate("/board");
     } catch (err) {
       console.error(err);
-      setError(err.message || "שגיאה באימות");
+      let msg = err.message || "שגיאה באימות";
+      if (msg.includes("User already registered")) {
+        msg = "האימייל הזה כבר רשום במערכת. אנא עברו למסך התחברות.";
+      } else if (msg.includes("Password should be at least")) {
+        msg = "הסיסמה חייבת להכיל לפחות 6 תווים.";
+      } else if (msg.includes("Invalid login credentials")) {
+        msg = "אימייל או סיסמה שגויים.";
+      }
+      setError(msg);
     }
   };
 
@@ -48,7 +56,7 @@ const AuthPage = () => {
         {mode === "login" ? "התחברות" : "רישום"}
       </h1>
       {error && (
-        <div className="bg-red-100 text-red-800 p-4 mb-4 rounded">
+        <div className="bg-red-50 border-r-4 border-red-500 text-red-800 p-[16px] mb-[16px] rounded-[8px] text-sm font-bold shadow-sm">
           {error}
         </div>
       )}
