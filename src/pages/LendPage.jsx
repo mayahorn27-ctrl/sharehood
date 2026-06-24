@@ -11,6 +11,7 @@ const LendPage = () => {
   const [form, setForm] = useState({
     name: '',
     price: '',
+    phone: '',
     description: '',
     location: '',
     images: [], // array of image URLs
@@ -47,8 +48,8 @@ const LendPage = () => {
     const lenderEmail = user?.email || '';
 
     // שלוף טלפון מ-public.users אם קיים
-    let lenderPhone = '';
-    if (isSupabaseConfigured && lenderId) {
+    let lenderPhone = form.phone.trim();
+    if (!lenderPhone && isSupabaseConfigured && lenderId) {
       const { data: userData } = await supabase
         .from('users').select('phone').eq('id', lenderId).single();
       lenderPhone = userData?.phone || '';
@@ -92,6 +93,7 @@ const LendPage = () => {
     setForm({
       name: '',
       price: '',
+      phone: '',
       description: '',
       location: '',
       images: [],
@@ -160,6 +162,24 @@ const LendPage = () => {
             placeholder="לדוגמה: 40"
             min="0"
           />
+        </div>
+
+        {/* Phone */}
+        <div>
+          <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+            מספר טלפון לקבלת תשלום (Bit/PayBox)
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            value={form.phone}
+            onChange={handleChange}
+            required
+            className="w-full input-field"
+            placeholder="לדוגמה: 050-1234567"
+          />
+          <p className="text-[10px] text-gray-500 mt-4">חובה להזין מספר טלפון כדי שהשוכרים יוכלו להעביר לך את הכסף על ההשכרה.</p>
         </div>
 
         {/* Location */}

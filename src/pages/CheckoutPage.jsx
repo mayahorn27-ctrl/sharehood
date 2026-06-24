@@ -238,12 +238,12 @@ const CheckoutPage = () => {
               <div className="space-y-4">
                 <label className="text-sm font-medium text-gray-700">שם מלא</label>
                 <input type="text" className="input-field w-full"
-                  value={form.fullName} onChange={e => setForm(f => ({ ...f, fullName: e.target.value }))} />
+                  value={form.fullName} onChange={e => setForm(f => ({ ...f, fullName: e.target.value }))} spellCheck="false" data-gramm="false" />
               </div>
               <div className="space-y-4">
                 <label className="text-sm font-medium text-gray-700">מספר טלפון</label>
                 <input type="tel" className="input-field w-full"
-                  value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
+                  value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} spellCheck="false" data-gramm="false" />
               </div>
               <div className="md:col-span-2 space-y-4">
                 <label className="text-sm font-medium text-gray-700">אימייל</label>
@@ -317,10 +317,12 @@ const CheckoutPage = () => {
                   placeholder="לדוגמה: 050-1234567"
                   value={recipientPhone}
                   onChange={e => setRecipientPhone(e.target.value)}
+                  spellCheck="false"
+                  data-gramm="false"
+                  autoComplete="off"
+                  data-lt-active="false"
+                  data-ms-editor="false"
                 />
-                {recipientPhone && (
-                  <span className="absolute left-12 top-1/2 -translate-y-1/2 text-xs text-green-600 font-bold">✓ אוטומטי</span>
-                )}
               </div>
               <p className="text-xs text-gray-400">
                 המספר נשלף אוטומטית מהמשאיל. ניתן לערוך אם יש צורך.
