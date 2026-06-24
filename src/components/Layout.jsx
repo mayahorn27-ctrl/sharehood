@@ -105,7 +105,7 @@ const Layout = () => {
             <Search size={24} />
           </button>
           
-          <Link to="/profile" className="flex items-center gap-12 p-6 pr-16 rounded-full bg-gray-50 border border-gray-100 hover:border-secondary/30 transition-all group">
+          <Link to="/profile" className="flex items-center gap-[12px] py-[6px] pl-[6px] pr-[16px] rounded-full bg-gray-50 border border-gray-100 hover:border-secondary/30 transition-all group">
   <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-secondary shadow-sm group-hover:scale-110 transition-transform">
     <UserCircle size={28} />
   </div>
