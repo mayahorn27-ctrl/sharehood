@@ -20,15 +20,26 @@ const BoardPage = () => {
 
 
       try {
-        const { data, error } = await supabase
+        const { data: productsData, error: productsError } = await supabase
           .from('products')
           .select('*, product_reviews:reviews(rating)')
           .order('id', { ascending: false });
 
-        if (error) throw error;
+        if (productsError) throw productsError;
 
-        if (data && data.length > 0) {
-          const mapped = data.map(p => {
+        // Fetch all bookings to filter out unavailable products
+        const { data: bookingsData, error: bookingsError } = await supabase
+          .from('bookings')
+          .select('product_id');
+
+        if (bookingsError) throw bookingsError;
+
+        const bookedProductIds = new Set((bookingsData || []).map(b => b.product_id));
+
+        if (productsData && productsData.length > 0) {
+          const availableProducts = productsData.filter(p => !bookedProductIds.has(p.id));
+
+          const mapped = availableProducts.map(p => {
             const revs = p.product_reviews || [];
             const trueReviewCount = revs.length;
             const trueRating = trueReviewCount > 0 
