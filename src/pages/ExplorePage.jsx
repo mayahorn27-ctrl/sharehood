@@ -1,4 +1,4 @@
-import { Search, Construction, Tent, Utensils, Sofa, Bike, Gamepad2, Baby, TreePine } from 'lucide-react';
+import { Search, Construction, Tent, Utensils, Sofa, Radio, Gamepad2, Baby, TreePine } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 const CATEGORIES = [
@@ -6,7 +6,7 @@ const CATEGORIES = [
   { name: "מחנאות", icon: Tent, color: "bg-green-100 text-green-600" },
   { name: "מטבח", icon: Utensils, color: "bg-red-100 text-red-600" },
   { name: "אירוח", icon: Sofa, color: "bg-blue-100 text-blue-600" },
-  { name: "ספורט", icon: Bike, color: "bg-purple-100 text-purple-600" },
+  { name: "אלקטרוניקה", icon: Radio, color: "bg-purple-100 text-purple-600" },
   { name: "גיימינג", icon: Gamepad2, color: "bg-indigo-100 text-indigo-600" },
   { name: "תינוקות", icon: Baby, color: "bg-pink-100 text-pink-600" },
   { name: "גינה", icon: TreePine, color: "bg-emerald-100 text-emerald-600" },

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase, isSupabaseConfigured } from '../supabaseClient';
 import { useAuth } from '../context/AuthContext';
 
-const CATEGORIES = ["הכל", "כלי עבודה", "מחנאות", "מטבח", "אירוח", "ספורט", "גינה", "גיימינג", "תינוקות"];
+const CATEGORIES = ["הכל", "כלי עבודה", "מחנאות", "מטבח", "אירוח", "אלקטרוניקה", "גינה", "גיימינג", "תינוקות"];
 
 const LendPage = () => {
   const navigate = useNavigate();

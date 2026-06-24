@@ -13,11 +13,11 @@ const ProductCard = ({ product }) => {
           alt={product.name} 
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
-        <div className="absolute top-12 left-12 bg-white/90 backdrop-blur-md px-8 py-4 rounded-full text-xs font-bold flex items-center gap-4 shadow-sm border border-white/20">
+        <div className="absolute top-[12px] left-[12px] bg-white/90 backdrop-blur-md px-[8px] py-[4px] rounded-full text-xs font-bold flex items-center gap-1 shadow-sm border border-white/20 z-10">
           <Star size={12} className="text-accent fill-accent" />
           <span>{product.rating}</span>
         </div>
-        <div className="absolute top-12 right-12 bg-primary/90 backdrop-blur-md px-8 py-4 rounded-full text-[10px] text-white font-bold uppercase tracking-wider">
+        <div className="absolute top-[12px] right-[12px] bg-primary/90 backdrop-blur-md px-[8px] py-[4px] rounded-full text-[10px] text-white font-bold uppercase tracking-wider z-10">
           {product.category}
         </div>
       </div>
