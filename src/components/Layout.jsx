@@ -13,6 +13,17 @@ const Layout = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const handleSearch = (e) => {
+    if (e.key === 'Enter') {
+      if (searchTerm.trim()) {
+        navigate(`/board?search=${encodeURIComponent(searchTerm.trim())}`);
+      } else {
+        navigate(`/board`);
+      }
+      setIsSearchOpen(false);
+    }
+  };
+
   // Show category bar on home, board, and explore pages
   const showCategoryBar = ['/', '/board', '/explore'].includes(location.pathname);
 
@@ -27,8 +38,11 @@ const Layout = () => {
               <input
                 autoFocus
                 type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={handleSearch}
                 placeholder="מה תרצו לשכור היום?"
-                className="w-full bg-gray-100 border-none rounded-full pr-52 pl-16 py-16 text-lg outline-none focus:ring-2 focus:ring-secondary/20"
+                className="w-full bg-gray-100 border-none rounded-full pr-[52px] pl-[16px] py-[12px] text-lg outline-none focus:ring-2 focus:ring-secondary/20"
               />
             </div>
             <button onClick={() => setIsSearchOpen(false)} className="p-12 text-gray-500 hover:bg-gray-100 rounded-full transition-colors">
@@ -39,7 +53,14 @@ const Layout = () => {
             <h3 className="text-sm font-bold text-gray-400 mb-20 uppercase tracking-widest">חיפושים פופולריים</h3>
             <div className="flex flex-wrap gap-12">
               {["מקדחה", "אוהל", "מיקסר", "מקרן", "אופניים"].map(term => (
-                <button key={term} className="px-20 py-10 bg-gray-50 border border-gray-100 rounded-full text-sm font-medium hover:bg-white hover:border-secondary hover:text-secondary transition-all shadow-sm">
+                <button 
+                  key={term} 
+                  onClick={() => {
+                    setSearchTerm(term);
+                    navigate(`/board?search=${encodeURIComponent(term)}`);
+                    setIsSearchOpen(false);
+                  }}
+                  className="px-[20px] py-[10px] bg-gray-50 border border-gray-100 rounded-full text-sm font-medium hover:bg-white hover:border-secondary hover:text-secondary transition-all shadow-sm">
                   {term}
                 </button>
               ))}
@@ -66,8 +87,11 @@ const Layout = () => {
             <Search className="absolute right-16 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-secondary transition-colors" size={20} />
             <input 
               type="text" 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={handleSearch}
               placeholder="מה תרצו לשכור היום? (למשל: מקדחה, אוהל...)" 
-              className="w-full bg-gray-50/50 border border-gray-200 rounded-full pr-48 pl-20 py-12 text-sm focus:ring-4 focus:ring-secondary/10 focus:bg-white focus:border-secondary transition-all outline-none shadow-inner"
+              className="w-full bg-gray-50/50 border border-gray-200 rounded-full pr-[48px] pl-[20px] py-[10px] text-sm focus:ring-4 focus:ring-secondary/10 focus:bg-white focus:border-secondary transition-all outline-none shadow-inner"
             />
           </div>
         </div>
