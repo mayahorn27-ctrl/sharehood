@@ -40,7 +40,7 @@ const CategoryBar = () => {
   return (
     <div className="sticky top-20 z-40 bg-white/80 backdrop-blur-md border-b border-gray-100 w-full">
       <div className="max-w-7xl mx-auto px-16">
-        <div className="flex items-center gap-24 md:gap-40 overflow-x-auto py-12 thin-scrollbar justify-start">
+        <div className="flex items-center gap-16 md:gap-24 overflow-x-auto py-12 no-scrollbar justify-start md:justify-center">
           {CATEGORIES_WITH_ICONS.map((cat) => {
             const Icon = cat.icon;
             const isActive = currentCategory === cat.name;
