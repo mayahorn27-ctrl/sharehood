@@ -48,12 +48,17 @@ const ProductDetailPage = () => {
           comment: r.comment
         })) : [];
 
+        const trueReviewCount = reviewsList.length;
+        const trueRating = trueReviewCount > 0 
+          ? Number((reviewsList.reduce((acc, curr) => acc + curr.rating, 0) / trueReviewCount).toFixed(1))
+          : 0;
+
         const mappedProduct = {
           id: pData.id,
           name: pData.name,
           price: Number(pData.price),
-          rating: Number(pData.rating || 4.5),
-          reviews: pData.reviews || 0,
+          rating: trueReviewCount > 0 ? trueRating : "חדש",
+          reviews: trueReviewCount,
           category: pData.category,
           location: pData.location,
           description: pData.description,
@@ -127,11 +132,17 @@ const ProductDetailPage = () => {
         comment: newReview.comment
       };
       
-      setProduct(prev => ({
-        ...prev,
-        reviewsList: [addedReview, ...prev.reviewsList],
-        reviews: prev.reviews + 1,
-      }));
+      setProduct(prev => {
+        const newReviewsList = [addedReview, ...prev.reviewsList];
+        const newCount = newReviewsList.length;
+        const newAvg = (newReviewsList.reduce((acc, curr) => acc + curr.rating, 0) / newCount).toFixed(1);
+        return {
+          ...prev,
+          reviewsList: newReviewsList,
+          reviews: newCount,
+          rating: Number(newAvg)
+        };
+      });
       
       setReviewForm({ rating: 5, comment: '' });
       alert('הביקורת נוספה בהצלחה!');
