@@ -96,6 +96,29 @@ const ProfilePage = () => {
     if (!authLoading) fetchProfileData();
   }, [authUser, authLoading]);
 
+  const handleDeleteListing = async (listingId) => {
+    if (!window.confirm('האם את/ה בטוח/ה שברצונך למחוק מוצר זה?')) return;
+    
+    if (isSupabaseConfigured) {
+      try {
+        const { error } = await supabase
+          .from('products')
+          .delete()
+          .eq('id', listingId);
+        
+        if (error) {
+          console.error('Error deleting listing:', error);
+          alert('אירעה שגיאה במחיקת המוצר');
+          return;
+        }
+      } catch (err) {
+        console.error('Error:', err);
+      }
+    }
+    
+    setMyListings(prev => prev.filter(item => item.id !== listingId));
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-64">
@@ -160,8 +183,19 @@ const ProfilePage = () => {
                     <p className="text-sm text-gray-500">₪{listing.price} / יום</p>
                   </div>
                 </div>
-                <div className="bg-primary/10 text-primary text-xs font-bold px-12 py-6 rounded-full">
-                  פעיל
+                <div className="flex items-center gap-12">
+                  <div className="bg-primary/10 text-primary text-xs font-bold px-12 py-6 rounded-full">
+                    פעיל
+                  </div>
+                  <button 
+                    onClick={() => handleDeleteListing(listing.id)}
+                    className="p-8 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                    title="מחק מוצר"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
                 </div>
               </div>
             ))
