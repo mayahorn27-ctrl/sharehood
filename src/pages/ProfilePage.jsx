@@ -115,7 +115,9 @@ const ProfilePage = () => {
           className="w-24 h-24 rounded-full border-4 border-primary/10 mb-16 object-cover"
         />
         <h1 className="text-2xl font-bold">{user.full_name}</h1>
-        <p className="text-gray-500 text-sm mt-4">חבר/ה מאז: {user.joined_at}</p>
+        <p className="text-gray-500 text-sm mt-4">
+          חבר/ה מאז: {user.joined_at ? new Date(user.joined_at).toLocaleDateString('he-IL', { year: 'numeric', month: 'long', day: 'numeric' }) : ''}
+        </p>
         {user.email && (
           <p className="text-gray-400 text-xs mt-2">{user.email}</p>
         )}
