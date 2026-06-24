@@ -58,8 +58,9 @@ const ProductDetailPage = () => {
             responseTime: pData.lender_response_time,
             joined: pData.lender_joined,
             image: pData.lender_image,
-            phone: pData.lender?.phone || 'לא הוזן',
-            email: pData.lender?.email || 'לא הוזן'
+            // עדיפות: עמודות products ← לאחר מכן join עם users
+            phone: pData.lender_phone || pData.lender?.phone || 'לא הוזן',
+            email: pData.lender_email || pData.lender?.email || 'לא הוזן'
           },
           reviewsList
         };

@@ -58,7 +58,7 @@ const CheckoutPage = () => {
     }
   }, [authUser]);
 
-  // Fetch product
+  // Fetch product + auto-fill lender phone
   useEffect(() => {
     const fetchProduct = async () => {
       setLoading(true);
@@ -66,9 +66,13 @@ const CheckoutPage = () => {
         const { data, error } = await supabase
           .from('products').select('*').eq('id', productId).single();
         if (error) throw error;
-        setProduct(data
-          ? { id: data.id, name: data.name, price: Number(data.price), image: data.image }
-          : null);
+        if (data) {
+          setProduct({ id: data.id, name: data.name, price: Number(data.price), image: data.image });
+          // מלא אוטומטית את מספר הטלפון של המשאיל
+          if (data.lender_phone) setRecipientPhone(data.lender_phone);
+        } else {
+          setProduct(null);
+        }
       } catch (err) {
         console.error("Error fetching product for checkout:", err);
         setProduct(null);
@@ -306,17 +310,20 @@ const CheckoutPage = () => {
               <label className="text-sm font-medium text-gray-700">
                 מספר {paymentMethod === 'bit' ? 'Bit' : 'PayBox'} של המשאיל/ה
               </label>
-              <input
-                type="tel"
-                className="input-field w-full"
-                placeholder="לדוגמה: 050-1234567"
-                value={recipientPhone}
-                onChange={e => setRecipientPhone(e.target.value)}
-              />
+              <div className="relative">
+                <input
+                  type="tel"
+                  className="input-field w-full"
+                  placeholder="לדוגמה: 050-1234567"
+                  value={recipientPhone}
+                  onChange={e => setRecipientPhone(e.target.value)}
+                />
+                {recipientPhone && (
+                  <span className="absolute left-12 top-1/2 -translate-y-1/2 text-xs text-green-600 font-bold">✓ אוטומטי</span>
+                )}
+              </div>
               <p className="text-xs text-gray-400">
-                {paymentMethod === 'bit'
-                  ? '✓ לאחר האישור תועבר/י לאפליקציית Bit לביצוע התשלום'
-                  : '✓ לאחר האישור תועבר/י לאפליקציית PayBox לביצוע התשלום'}
+                המספר נשלף אוטומטית מהמשאיל. ניתן לערוך אם יש צורך.
               </p>
             </div>
           </section>

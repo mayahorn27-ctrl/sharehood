@@ -44,6 +44,15 @@ const LendPage = () => {
     const lenderId = user?.id;
     const lenderName = user?.user_metadata?.full_name || user?.email || 'משתמש';
     const lenderImage = user?.user_metadata?.avatar_url || 'https://i.pravatar.cc/150?u=default';
+    const lenderEmail = user?.email || '';
+
+    // שלוף טלפון מ-public.users אם קיים
+    let lenderPhone = '';
+    if (isSupabaseConfigured && lenderId) {
+      const { data: userData } = await supabase
+        .from('users').select('phone').eq('id', lenderId).single();
+      lenderPhone = userData?.phone || '';
+    }
 
     const productData = {
       name: form.name,
@@ -56,6 +65,8 @@ const LendPage = () => {
       image: form.images[0] || 'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?auto=format&fit=crop&q=80&w=800',
       lender_id: lenderId,
       lender_name: lenderName,
+      lender_phone: lenderPhone,
+      lender_email: lenderEmail,
       lender_response_time: 'פחות משעה',
       lender_joined: 'מאי 2026',
       lender_image: lenderImage,
