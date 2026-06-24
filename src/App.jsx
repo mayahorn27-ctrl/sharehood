@@ -25,7 +25,7 @@ const AnimatedRoutes = () => {
           <Route path="explore" element={<PageTransition><ExplorePage /></PageTransition>} />
           <Route path="board" element={<PageTransition><BoardPage /></PageTransition>} />
           <Route path="product/:id" element={<PageTransition><ProductDetailPage /></PageTransition>} />
-          <Route path="checkout" element={<PageTransition><CheckoutPage /></PageTransition>} />
+          <Route path="checkout" element={user ? <PageTransition><CheckoutPage /></PageTransition> : <Navigate to="/auth" replace />} />
           <Route path="lend" element={user ? <PageTransition><LendPage /></PageTransition> : <Navigate to="/auth" replace />} />
           <Route path="profile" element={user ? <PageTransition><ProfilePage /></PageTransition> : <Navigate to="/auth" replace />} />
           <Route path="auth" element={<PageTransition><AuthPage /></PageTransition>} />
