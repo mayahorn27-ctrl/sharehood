@@ -22,29 +22,37 @@ const BoardPage = () => {
       try {
         const { data, error } = await supabase
           .from('products')
-          .select('*')
+          .select('*, product_reviews:reviews(rating)')
           .order('id', { ascending: false });
 
         if (error) throw error;
 
         if (data && data.length > 0) {
-          const mapped = data.map(p => ({
-            id: p.id,
-            name: p.name,
-            price: Number(p.price),
-            rating: Number(p.rating || 4.5),
-            reviews: p.reviews || 0,
-            category: p.category,
-            location: p.location,
-            description: p.description,
-            image: p.image,
-            lender: {
-              name: p.lender_name,
-              responseTime: p.lender_response_time,
-              joined: p.lender_joined,
-              image: p.lender_image
-            }
-          }));
+          const mapped = data.map(p => {
+            const revs = p.product_reviews || [];
+            const trueReviewCount = revs.length;
+            const trueRating = trueReviewCount > 0 
+              ? Number((revs.reduce((acc, curr) => acc + curr.rating, 0) / trueReviewCount).toFixed(1))
+              : 0;
+
+            return {
+              id: p.id,
+              name: p.name,
+              price: Number(p.price),
+              rating: trueReviewCount > 0 ? trueRating : "חדש",
+              reviews: trueReviewCount,
+              category: p.category,
+              location: p.location,
+              description: p.description,
+              image: p.image,
+              lender: {
+                name: p.lender_name,
+                responseTime: p.lender_response_time,
+                joined: p.lender_joined,
+                image: p.lender_image
+              }
+            };
+          });
           setProducts(mapped);
         } else {
           setProducts([]);
